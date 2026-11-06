@@ -1,5 +1,11 @@
 # Trading Bot — Binance Futures Testnet (USDT-M)
 
+## Northstar web workspace
+
+The [Northstar web app](northstar-web/) adds a browser-based workspace with Practice Mode, optional Binance Futures Live Mode, and administration. Start with the [web setup guide](northstar-web/docs/WEB_APP.md) or see the [screenshot gallery](northstar-web/README.md#screenshots).
+
+![Explore Northstar landing page](northstar-web/docs/screenshots/explore.png)
+
 A small, structured Python CLI application that places **MARKET**, **LIMIT**,
 and **STOP_LIMIT** orders on the Binance Futures Testnet, with input
 validation, structured logging, and error handling.

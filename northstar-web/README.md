@@ -4,6 +4,26 @@ A responsive, authenticated web workspace now accompanies the original CLI. Trad
 
 Quick start: `venv/bin/python scripts/dev.py` after installing `requirements-dev.txt`. No demo accounts or trades are seeded.
 
+## Screenshots
+
+### Explore Northstar
+
+The landing page introduces Practice and Live Mode. The dashboard preview uses illustrative data.
+
+![Explore Northstar landing page and preview dashboard](docs/screenshots/explore.png)
+
+### Live dashboard
+
+After connecting a Binance Futures account, the workspace displays the USDT wallet balance, available balance, and unrealized profit or loss.
+
+![Live dashboard with Binance Futures connection and balance cards](docs/screenshots/live-dashboard.png)
+
+### Live order entry
+
+The order form lets users review a market or limit order before confirming submission. The history below lists orders submitted through Northstar.
+
+![Live order entry form and order history](docs/screenshots/live-order.png)
+
 ---
 
 # Trading Bot — Binance Futures Testnet (USDT-M)
