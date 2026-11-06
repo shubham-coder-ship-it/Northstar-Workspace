@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf-token" content="{{ csrf }}">
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<title>Northstar · Trading workspace</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+<script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body data-mode="{{ 'practice' if paper else 'testnet' }}">
+<div class="shell">
+<aside class="sidebar">
+<a class="brand" href="/" aria-label="Northstar home"><span class="brand-symbol">✳</span> northstar<span class="brand-dot">.</span></a>
+<div class="workspace-label">YOUR WORKSPACE <span>01</span></div>
+<nav aria-label="Main navigation">
+<button class="nav-item active" data-tab="overview"><span>◫</span> Overview</button>
+<button class="nav-item" id="workspace-practice" type="button">{{ 'Practice Mode' if paper else 'Testnet' }}</button><button class="nav-item" id="workspace-live" type="button">Live Mode</button><button class="nav-item" data-tab="history"><span>↗</span> Order history</button>
+<button class="nav-item" data-tab="settings"><span>⚙</span> Account & billing</button>
+<button class="nav-item" data-tab="admin" id="admin-nav" hidden><span>♜</span> Administration</button>
+</nav>
+<div class="sidebar-bottom"><div class="testnet-card"><span class="pulse"></span> A safer place to trade<p>{% if paper %}Local practice mode<br>No API keys required.{% else %}Binance Futures Testnet<br>Simulated funds. Real workflows.{% endif %}</p></div><small>BUILD WITH INTENTION.</small></div>
+</aside>
+<main>
+<header class="topbar"><span>Workspace <span class="slash">/</span> <strong id="page-label">Overview</strong></span><div class="top-right"><button id="mode-switch" class="secondary" hidden>Switch mode</button><span class="badge"><i></i> {{ 'PRACTICE MODE' if paper else 'TESTNET ONLY' }}</span><button id="account-button" class="avatar" aria-label="Open account">N</button></div></header>
+<div id="notice" role="status" aria-live="polite" hidden></div>
+<section class="page" id="welcome" hidden>
+<div class="page-heading"><div class="eyebrow">YOUR NORTHSTAR PROFILE</div><h1>Choose your workspace.</h1></div>
+<article class="panel"><div id="welcome-photo" class="profile-preview">N</div><h2 id="welcome-name"></h2>
+<p id="welcome-email"></p><p id="welcome-age"></p>
+<button class="text-button" id="edit-profile">Update profile and photo</button> <a class="text-button" href="/explore">Explore Northstar ↗</a></article>
+<div class="settings-grid mode-options">
+<article class="panel"><h2>{{ 'Practice Mode' if paper else 'Testnet' }}</h2><p>{{ 'Build experience with local practice orders.' if paper else 'Open your Binance Futures Testnet workspace.' }}</p><button id="choose-practice" class="primary">{{ 'Open Practice Mode' if paper else 'Open Testnet' }}</button></article>
+<article class="panel"><h2>Live Mode</h2><p>Connect Binance USDⓈ-M Futures to view your account and place real-money orders.</p><button id="choose-professional" class="secondary">Open Live Mode</button></article>
+</div></section>
+<section class="page" id="professional" hidden>
+<div class="page-heading"><div class="eyebrow">LIVE MODE · REAL FUNDS</div><h1>Live trading.</h1><p>Binance USDⓈ-M Futures · USDT pairs</p></div>
+<article class="panel">
+<h2>Binance Futures connection</h2><p id="live-state" role="status">Connect your live Binance Futures account.</p>
+<form id="live-credentials"><label>Live API key<input name="key" type="password" required minlength="16" maxlength="256" autocomplete="off"></label><label>Live API secret<input name="secret" type="password" required minlength="16" maxlength="256" autocomplete="off"></label><button class="primary">Verify and connect</button></form>
+<button id="live-refresh" class="secondary">Refresh live account</button> <button id="live-disconnect" class="secondary" hidden>Disconnect live key</button>
+<dl id="live-balances" class="practice-stats"></dl>
+</article>
+<article id="live-ticket" class="panel live-panel" hidden><h2>Place a real-money order</h2>
+<form id="live-order"><label>Trading pair<input name="symbol" value="BTCUSDT" required pattern="[A-Z0-9]{1,16}USDT"></label><label>Side<select name="side"><option>BUY</option><option>SELL</option></select></label><label>Order type<select name="kind"><option>MARKET</option><option>LIMIT</option></select></label><label>Quantity (base asset)<input name="quantity" inputmode="decimal" maxlength="24" required></label><label id="live-price" hidden>Limit price (USDT)<input name="price" inputmode="decimal" maxlength="24" disabled></label><button class="primary">Review live order</button></form>
+</article>
+<article class="panel table-wrap"><h2>Live orders submitted through Northstar</h2><table><thead><tr><th>Pair</th><th>Side / type</th><th>Quantity</th><th>Status</th><th>Order ID</th><th>Submitted</th><th>Exchange status</th></tr></thead><tbody id="live-history"></tbody></table><p id="live-empty" class="muted">No live orders submitted.</p></article>
+</section>
+<section class="page" id="overview">
+<div class="page-heading"><div class="eyebrow">YOUR EDGE STARTS HERE</div><h1>A clearer view.<br>A more considered trade.</h1><p>{{ 'Your local workspace for practicing order entry.' if paper else 'Your private workspace for Binance Futures Testnet.' }}</p></div>{% if paper %}<article class="panel practice-analytics"><h2>Practice performance</h2><dl id="practice-stats" class="practice-stats"></dl><canvas id="practice-chart" width="640" height="160" aria-label="Virtual cash balance after recent fills" role="img"></canvas><p id="practice-chart-caption" class="muted"></p></article>{% endif %}
+<div class="overview-cards">
+<article class="metric"><span>{{ 'TRADING MODE' if paper else 'EXCHANGE CONNECTION' }}</span><strong id="connection-status">{{ 'Local practice' if paper else 'Not connected' }} <i class="status-dot"></i></strong><small>{{ 'No API keys required' if paper else 'Credentials encrypted at rest' }}</small></article>
+<article class="metric"><span>YOUR ORDERS</span><strong id="order-count">— <small>orders</small></strong><small>Latest 100 submissions</small></article>
+<article class="metric"><span>MEMBERSHIP</span><strong id="membership">Free workspace</strong><small>Manage your subscription in account settings</small></article>
+</div>
+<div class="trading-grid">
+<div class="left-column">
+<article class="panel market-panel"><div class="panel-top"><div><span class="eyebrow">DESIGNED FOR DELIBERATE TRADING</span><h2>Your next move, with clarity.</h2></div><span class="small-tag">USDT-M FUTURES</span></div><div class="orbit-art" aria-hidden="true"><div class="orbit o1"></div><div class="orbit o2"></div><div class="orbit o3"></div><span class="orbit-center">✳</span><span class="orbit-note">PRECISION OVER NOISE</span></div><div class="market-footer"><span>{% if paper %}Practice order entry.<br><small>Virtual fills use the practice price you enter.</small>{% else %}No simulated market data.<br><small>Execution results come directly from Binance testnet.</small>{% endif %}</span><a href="#recent-orders">View your activity ↗</a></div></article>
+<article class="panel" id="recent-orders"><div class="panel-top"><h2>Recent activity</h2><button class="text-button" id="refresh">Refresh ↻</button></div><div id="recent-list" class="empty-state"><span class="empty-icon">↗</span><h3>A fresh start.</h3><p>Your orders will appear here after your first submission.</p></div></article>
+</div>
+<article class="panel order-panel"><div class="panel-top"><h2>Place an order</h2><span class="small-tag">{{ 'PRACTICE' if paper else 'TESTNET' }}</span></div><p class="muted">{{ 'Practice placing market and limit orders.' if paper else 'Build your confidence with simulated funds.' }}</p>
+<form id="order-form"><label>Trading pair<input name="symbol" value="BTCUSDT" maxlength="20" pattern="[A-Z0-9]{5,20}" required autocomplete="off"></label><fieldset class="side-toggle"><legend class="sr-only">Order side</legend><label><input type="radio" name="side" value="BUY" checked><span>Buy / Long</span></label><label><input type="radio" name="side" value="SELL"><span>Sell / Short</span></label></fieldset><label>Order type<select name="kind"><option value="MARKET">Market order</option><option value="LIMIT">Limit order</option></select></label><label>Quantity <span class="field-note">Base asset</span><input name="quantity" inputmode="decimal" placeholder="0.00" required maxlength="24" pattern="[0-9]+(\.[0-9]+)?"></label><label id="price-field" hidden>Limit price <span class="field-note">USDT</span><input name="price" inputmode="decimal" placeholder="0.00" maxlength="24"></label>{% if paper %}<label>Practice reference price (USDT)<input name="quote" inputmode="decimal" maxlength="24" required></label><p class="form-footnote">Enter a hypothetical price. A limit order that does not cross this price stays pending. Practice supports buying and selling virtual holdings.</p>{% endif %}<div class="order-facts"><span>Mode <strong>{{ 'Local practice' if paper else 'Binance Futures Testnet' }}</strong></span><span>{{ 'Order entry' if paper else 'Execution' }} <strong id="execution-label">{{ 'Market order' if paper else 'Market price' }}</strong></span></div><label class="confirmation"><input name="confirmed" type="checkbox" required><span>I have reviewed this order. {{ 'It will be saved locally for practice.' if paper else 'It uses simulated testnet funds.' }}</span></label><button class="primary full" type="submit">{{ 'Save practice order' if paper else 'Submit testnet order' }} <span>↗</span></button><p class="form-footnote">Orders are never automatically retried.</p></form></article>
+</div>
+</section>
+<section class="page" id="history" hidden><div class="eyebrow">THE FULL PICTURE</div><h1>Order history.</h1><p class="muted">Your latest 100 submissions. {{ 'Practice orders are saved on this computer.' if paper else 'An uncertain result requires verification on Binance before you submit again.' }}</p><div class="panel table-wrap">{% if paper %}<label>Filter by pair <input id="pair-filter" placeholder="BTCUSDT"></label>{% endif %}<table><thead><tr><th>Pair</th><th>Side / Type</th><th>Quantity</th>{% if paper %}<th>Fill price</th><th>Realized P/L</th>{% endif %}<th>Status</th><th>Submitted</th></tr></thead><tbody id="history-body"></tbody></table><p id="history-empty" class="empty-state">No orders yet.</p></div></section>
+<section class="page" id="settings" hidden><div class="eyebrow">MAKE IT YOURS</div><h1>Your workspace,<br>your control.</h1><div class="settings-grid">{% if not paper %}<article class="panel"><h2>Exchange connection</h2><p class="muted">Use only Binance Futures Testnet credentials. Keys stay on the server, encrypted at rest, and are never sent back to your browser.</p><form id="credentials-form"><label>Testnet API key<input name="key" type="password" autocomplete="off" required minlength="16" maxlength="256"></label><label>Testnet API secret<input name="secret" type="password" autocomplete="off" required minlength="16" maxlength="256"></label><button class="primary" type="submit">Save credentials ↗</button><button class="quiet danger" type="button" id="disconnect">Disconnect</button></form></article>{% endif %}<article class="panel"><h2>Profile</h2><form id="profile-form"><label>Full name<input name="full_name" maxlength="100" required></label><label>Email address<input id="profile-email" type="email" readonly></label><label>Age<input name="age" type="number" min="1" max="120"></label><button class="secondary" type="submit">Save profile</button></form><h3>Change email address</h3><form id="email-form"><label>New email address<input type="email" name="email" required maxlength="254"></label><label>Current password<input type="password" name="password" autocomplete="current-password" required maxlength="128"></label><button class="secondary" type="submit">Send verification email</button></form><h3>Profile photograph</h3><div class="profile-preview" id="profile-preview">N</div><p class="muted">PNG, JPEG or WebP. Up to 2 MB. We remove metadata and resize your image to protect your privacy.</p><form id="image-form"><label>Choose an image<input type="file" name="image" accept="image/png,image/jpeg,image/webp" required></label><button class="secondary" type="submit">Upload image</button></form></article><article class="panel"><h2>Change password</h2><p class="muted">Changing your password signs out all active sessions.</p><form id="password-form"><label>Current password<input name="current" type="password" autocomplete="current-password" required maxlength="128"></label><button type="button" class="text-button" data-toggle-password="current">Show password</button><label>New password<input name="new" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><button type="button" class="text-button" data-toggle-password="new">Show password</button><label>Confirm new password<input name="confirm" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label><button class="secondary" type="submit">Change password</button></form></article><article class="panel billing-panel"><div class="eyebrow">NORTHSTAR MEMBERSHIP</div><h2>Support an independent workspace.</h2><p class="muted">Trading stays free. An optional recurring subscription supports this service. Stripe hosts checkout; your card details never touch this server.</p><p class="billing-status" id="billing-status">No active subscription</p><p id="billing-plan"></p><p>Member benefit: downloadable Practice and Live order history.</p><a id="member-export" href="/api/billing/member-orders.csv" hidden>Download order history CSV</a><button class="primary" id="subscribe">Support Northstar ↗</button><button class="secondary" id="billing-portal">Manage subscription</button><p class="form-footnote">Price and billing interval are shown on Stripe before you pay. Payments remain unavailable until the operator configures billing.</p></article></div><button id="signout" class="secondary">Sign out</button></section>
+<section class="page admin-workspace" id="admin" hidden>
+<div class="page-heading"><div class="eyebrow">NORTHSTAR ADMIN</div><h1>Platform operations.</h1><p>Accounts, trading, subscriptions, and security.</p></div>
+<div class="admin-layout">
+<nav class="admin-menu" aria-label="Administration">
+<button class="nav-item active" data-admin="overview">Overview</button>
+<button class="nav-item" data-admin="users">User Management</button>
+<button class="nav-item" data-admin="trades">Trading Management</button>
+<button class="nav-item" data-admin="practice">Practice Accounts</button>
+<button class="nav-item" data-admin="live">Professional Accounts</button>
+<button class="nav-item" data-admin="billing">Subscriptions &amp; Billing</button>
+<button class="nav-item" data-admin="reports">Reports &amp; Analytics</button>
+<button class="nav-item" data-admin="audit">Security &amp; Audit Logs</button>
+<button class="nav-item" data-admin="settings">Platform Settings</button>
+</nav>
+<article class="panel admin-content"><div class="panel-top"><h2 id="admin-title">Overview</h2><button class="secondary" id="admin-refresh">Refresh</button></div>
+<p id="admin-message" class="muted" role="status"></p>
+<label id="admin-search-label" hidden>Search name, email, or ID<input id="admin-search" type="search" autocomplete="off"></label>
+<div id="admin-content"></div></article>
+</div>
+</section>
+<footer><span>✳ Northstar workspace</span><span>Test thoughtfully. Trade deliberately.</span></footer>
+</main></div>
+<dialog id="auth-dialog"><div class="auth-brand">✳ northstar.</div><div class="eyebrow">A WORKSPACE WITH PERSPECTIVE</div><h2 id="auth-title">Welcome back.</h2><p class="muted">Sign in to your private trading workspace.</p><form id="auth-form"><label id="register-name" hidden>Full name<input name="full_name" autocomplete="name" maxlength="100" disabled></label><label>Email address<input type="email" name="email" autocomplete="email" required maxlength="254"></label><label>Password<input type="password" name="password" autocomplete="current-password" required minlength="12" maxlength="128"></label><button type="button" class="text-button" data-toggle-password="password">Show password</button><label id="register-confirm" hidden>Confirm password<input name="confirm" type="password" autocomplete="new-password" minlength="12" maxlength="128" disabled></label><p id="auth-error" role="alert"></p><button class="primary full" type="submit" id="auth-submit">Sign in ↗</button></form><button class="text-button" id="forgot-password">Forgot password?</button><button class="text-button" id="auth-toggle">New here? Create an account</button><p class="form-footnote">{{ 'Local practice mode. No API keys required.' if paper else 'Testnet only. No real-money trading.' }}</p></dialog>
+<dialog id="recovery-dialog"><h2 id="recovery-heading">Reset password</h2><form id="recovery-form"><label id="recovery-email">Email address<input type="email" name="email" maxlength="254" required></label><div id="recovery-fields" hidden><label>New password<input type="password" name="new" autocomplete="new-password" minlength="12" maxlength="128" disabled></label><label>Confirm new password<input type="password" name="confirm" autocomplete="new-password" minlength="12" maxlength="128" disabled></label></div><p id="recovery-status" role="status"></p><button class="primary" type="submit">Continue</button><button class="text-button" type="button" id="recovery-back">Back to sign in</button></form></dialog>
+<dialog id="signout-dialog"><h2>Sign out</h2><p>Are you sure you want to sign out of your Northstar account?</p><form method="dialog"><button class="secondary" value="cancel">Cancel</button><button class="primary" value="signout">Sign Out</button></form></dialog>
+<dialog id="live-review"><h2>Confirm live order</h2><p id="live-review-summary"></p><p>This order uses real funds.</p><form method="dialog" id="live-confirm"><label>Type LIVE to authorize<input name="confirmation" required pattern="LIVE" autocomplete="off"></label><button class="secondary" type="submit" value="cancel" formnovalidate>Cancel</button> <button class="primary" type="submit" value="send">Send live order</button></form></dialog>
+<dialog id="admin-user-dialog"><h2 id="admin-user-title">User activity</h2><div id="admin-user-details"></div><form method="dialog"><button class="secondary">Close</button></form></dialog></body></html>

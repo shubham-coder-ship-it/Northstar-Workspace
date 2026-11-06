@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Northstar — Trade smarter, faster, safer</title>
+<style>
+:root{color-scheme:dark;--ink:#f7f7f8;--muted:#aaa7b3;--violet:#ffa912;--line:#332d23;--green:#63d574;--red:#ff796f;font:16px Inter,Arial,sans-serif;background:#090c13;color:var(--ink)}
+*,*::before,*::after{box-sizing:border-box}body{margin:0}a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #ffe2b0;outline-offset:5px}button,a{touch-action:manipulation}[hidden]{display:none!important}
+.scene{position:relative;height:100svh;min-height:400px;overflow:hidden;isolation:isolate;background:#090c13}
+#stars{position:absolute;inset:0;width:100%;height:100%;z-index:-3}
+.stage{position:absolute;top:50%;left:50%;width:1672px;height:941px;transform:translate(-50%,-50%) scale(var(--scale,1));isolation:isolate}
+.sky{position:absolute;inset:0 0 auto;height:717px;z-index:-1;pointer-events:none;overflow:hidden}
+#rim,.media,
+#rim{transition:opacity .8s;mix-blend-mode:screen}
+
+.nav{position:absolute;left:72px;right:72px;top:32px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}
+.brand{display:inline-flex;align-items:center;gap:9px;justify-self:start;font-size:24px;font-weight:700;letter-spacing:-.04em}.bolt{width:23px;height:29px;fill:#ffc560}
+.nav-links{display:flex;align-items:center;gap:8px;font-size:15px;color:#ded9cf}.nav-links a,.nav-links button{padding:12px 16px;border-radius:999px;background:transparent;border:0}.nav-links a:hover,.nav-links button:hover,.nav-links .active{background:#14171f;color:#fff}.nav>.pill{justify-self:end}.menu-toggle{display:none}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;padding:0 25px;border:1px solid #4c4231;border-radius:999px;font-size:15px;font-weight:600;background:#12151c;white-space:nowrap;transition:background .2s,box-shadow .2s}
+.pill:hover{background:#161e32;box-shadow:0 0 24px #ffa91250}.primary{background:linear-gradient(125deg,#ffae20,#f8a81c);border-color:#ffc96c70;color:#17100a}.primary:hover{background:linear-gradient(125deg,#ffba42,#fab336);box-shadow:0 0 30px #ffa91290}
+.hero{position:absolute;top:207px;left:0;width:100%;text-align:center;padding:0 24px}.eyebrow,.tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:#fbe3b8}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:8px 13px;border:1px solid #cfb07950;border-radius:999px;background:#0b0f1ac9}.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:#ffce78;box-shadow:0 0 10px #ffc45d}
+h1{font-size:84px;line-height:.99;font-weight:700;letter-spacing:-.072em;margin:20px 0 17px}.wipe{display:block;overflow:hidden;padding-bottom:.11em;margin-bottom:-.11em}.wipe>span{display:block}.accent{background:linear-gradient(120deg,#ffe6ba,#ffc257 54%,#ffb83d);background-clip:text;color:transparent}
+.lede{color:#bab5c3;font-size:18px;line-height:1.55;margin:24px auto 25px;max-width:770px}.actions{display:flex;justify-content:center;gap:10px}
+.dashboard{position:absolute;top:651px;left:234px;width:1204px;min-height:max(450px,calc(290px + var(--extra,0px)));display:grid;grid-template-columns:198px minmax(0,1fr);border:1px solid #d8a245;border-radius:14px 14px 0 0;background:#0a0c10;box-shadow:0 0 65px #c4841447,0 -1px 15px #ffc15682}
+.dashboard::before{content:"";position:absolute;top:-2px;left:2%;right:2%;height:3px;background:linear-gradient(90deg,transparent,#ffb12a 18%,#ffebc9 51%,#ffb12a 82%,transparent);box-shadow:0 0 15px #ffb739}
+
+.side{padding:18px 14px;background:#0d1016;border-right:1px solid var(--line);border-radius:14px 0 0}.side-title{display:flex;justify-content:space-between;align-items:center;font-weight:700;padding:0 7px 10px}.side-list{list-style:none;padding:0;margin:0;color:#b6afa2;font-size:13px;display:grid;gap:2px}.side-list li{padding:6px 9px}.side-list .selected{color:#ffebc7;background:#151f3a;border-radius:6px}.promo{margin-top:14px;padding:12px;border:1px solid #5b4827;border-radius:8px;background:#101728;font-size:12px}.promo span{display:block;margin-top:6px;color:#ffdda2}
+.product{min-width:0;padding:14px 20px 22px}.product-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:11px;border-bottom:1px solid var(--line);color:#c5bdb0;font-size:12px}.user{display:flex;align-items:center;gap:8px}.avatar{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#473920;color:#ffebc8}.preview{color:#c9b89a;letter-spacing:.1em;text-transform:uppercase}
+.widgets{display:grid;grid-template-columns:1fr 1fr .9fr;gap:10px;margin-top:11px}.widget{min-width:0;padding:12px 13px;border:1px solid var(--line);border-radius:9px;background:linear-gradient(135deg,#111520,#0e1016)}.label{color:#bfb8ac;font-size:12px;margin:0 0 7px}.value{font-size:24px;font-weight:700;letter-spacing:-.04em}.change{font-size:11px;margin-left:7px;color:var(--green)}.negative{color:var(--red)}
+.chart{grid-column:1/3}.chart svg{display:block;width:100%;height:106px}.calendar{grid-column:3;grid-row:1/3}.calendar h2,.chart h2{font-size:13px;margin:0 0 8px}.calendar dl{margin:10px 0 0}.calendar dl div{display:flex;gap:8px;justify-content:space-between;padding:8px 0;border-top:1px solid var(--line);font-size:12px}.calendar dt{color:#bfb8ac}.calendar dd{margin:0;text-align:right}
+dialog{max-width:min(440px,calc(100% - 32px));background:#10141e;color:var(--ink);border:1px solid #826a40;border-radius:18px;padding:25px}dialog::backdrop{background:#090c13b}dialog p{color:#d2cbbf;line-height:1.6}dialog h2{margin-top:0}
+@keyframes arrive{from{opacity:0;translate:0 15px}to{opacity:1;translate:0 0}}
+@keyframes nav-in{from{opacity:0;translate:0 -12px}to{opacity:1;translate:0 0}}
+@keyframes wipe-up{from{translate:0 115%}to{translate:0 0}}
+@keyframes lift{from{opacity:0;translate:0 64px}to{opacity:1;translate:0 0}}
+@media(prefers-reduced-motion:no-preference){
+.nav{animation:nav-in .6s both}.eyebrow{animation:arrive .5s .13s both}
+.wipe>span{animation:wipe-up .73s .19s cubic-bezier(.2,.75,.2,1) both}.wipe+.wipe>span{animation-delay:.30s}
+.lede{animation:arrive .55s .46s both}.actions{animation:arrive .55s .55s both}.dashboard{animation:lift .8s .52s cubic-bezier(.2,.75,.2,1) both}
+.side,.product-top,.widget{animation:arrive .55s .68s both}.product-top{animation-delay:.74s}.widget{animation-delay:.78s}.chart{animation-delay:.86s}.calendar{animation-delay:.94s}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media(max-width:899px),(orientation:portrait){
+.scene{height:auto;min-height:100svh;overflow:clip}.stage{position:relative;top:auto;left:auto;transform:none;width:auto;height:auto;padding:0 18px}.sky{left:50%;width:max(740px,100%);height:420px;transform:translateX(-50%)}
+.nav{position:relative;inset:auto;grid-template-columns:1fr auto auto;padding:17px 0;gap:8px;z-index:1}.brand{font-size:21px}.nav>.pill{grid-column:2;grid-row:1;padding:0 14px;min-height:44px}.menu-toggle{display:inline-grid;place-items:center;grid-column:3;grid-row:1;width:44px;height:44px;border:1px solid #5a4c34;border-radius:50%;background:#101521}
+.nav-links{position:absolute;display:none;top:68px;right:0;min-width:200px;padding:8px;align-items:stretch;flex-direction:column;background:#10141f;border:1px solid #6d5834;border-radius:14px}.nav-links.open{display:flex}.nav-links a,.nav-links button{text-align:left}
+.hero{position:relative;inset:auto;padding:65px 0 0}.hero h1{font-size:clamp(38px,8.1vw,72px);line-height:1.05}.wipe{overflow:visible}.accent{display:block}.lede{font-size:15px;margin:20px auto}.actions .pill{padding:0 17px}
+.dashboard{position:relative;inset:auto;margin:48px auto 0;width:min(100%,720px);min-height:0;grid-template-columns:1fr;border-radius:14px 14px 0 0}.side{border-right:0;border-bottom:1px solid var(--line);border-radius:14px 14px 0 0}.side-list{display:flex;flex-wrap:wrap}.side-list li{padding:7px}.promo{display:none}.product{padding:12px}.widgets{grid-template-columns:1fr 1fr}.chart,.calendar{grid-column:1/-1;grid-row:auto}
+}
+@media(max-width:360px){.stage{padding:0 12px}.brand{font-size:18px}.nav>.pill{padding:0 10px}.value{font-size:20px}.change{display:block;margin:3px 0 0}}
+
+.explore-content{max-width:1160px;margin:auto;padding:36px 20px 0}
+.explore-section{scroll-margin-top:20px;margin-bottom:24px;padding:clamp(20px,4vw,44px);border:1px solid #58472d;border-radius:15px;background:#121722}
+.explore-section h2{font-size:clamp(26px,4vw,44px);letter-spacing:-.04em;margin:14px 0}
+.explore-section p{color:#c4bcc0;line-height:1.6}.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,215px),1fr));gap:12px}.feature-grid h3{margin:0}
+.faq-list article{padding:14px 0;border-top:1px solid #58472d}.faq-list h3{margin:0;color:#ffd08c}.faq-list p{margin:6px 0 0}
+.explore-footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;padding:24px 0;border-top:1px solid #58472d;color:#ffd08c}
+@keyframes explore-reveal{from{opacity:.45;translate:0 18px}to{opacity:1;translate:0 0}}
+@media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}@supports(animation-timeline:view()){.explore-section{animation:explore-reveal linear both;animation-timeline:view();animation-range:entry 0% entry 75%}}}
+</style>
+</head>
+<body>
+<div class="scene" id="home">
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="stage">
+<div class="sky" aria-hidden="true"><canvas id="rim" width="1672" height="717"></canvas></div>
+<nav class="nav" aria-label="Main navigation">
+<a class="brand" href="#home"><svg class="bolt" viewBox="0 0 24 30" aria-hidden="true"><path d="M14 0 1 17h9L8 30 23 11h-9z"/></svg>Northstar</a>
+<div class="nav-links" id="menu"><a class="active" href="#home" aria-current="page">Home</a><a href="#features">Features</a><a href="#advantage">Northstar Advantage</a><a href="#referral">Referral</a><a href="#faq">FAQ</a></div>
+<a class="pill primary start" href="/">Get Started <span aria-hidden="true">↗</span></a>
+<button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="menu">☰</button>
+</nav>
+<main>
+<section class="hero" aria-labelledby="headline">
+<div class="eyebrow">Two modes. One workspace.</div>
+<h1 id="headline"><span class="wipe"><span><b class="accent">Northstar</b> Trade Smarter,</span></span><span class="wipe"><span>Faster, Safer.</span></span></h1>
+<p class="lede">Practice with virtual funds, or connect Binance USDⓈ-M Futures to place live orders. Northstar keeps your practice history and live orders separate.</p>
+<div class="actions"><a class="pill primary start" href="/">Get Started <span aria-hidden="true">↗</span></a><a class="pill" href="#features">Learn More <span aria-hidden="true">↓</span></a></div>
+</section>
+<section class="dashboard" aria-label="Fictional Northstar dashboard preview">
+
+<aside class="side">
+<div class="side-title">Northstar <span aria-hidden="true">⚙</span></div>
+<ul class="side-list"><li>Search</li><li class="selected">Dashboard</li><li>Practice Mode</li><li>Live Mode</li><li>Order history</li><li>Account &amp; Billing</li><li>Settings</li></ul>
+<div class="promo">Northstar Membership<span>Optional support</span></div>
+</aside>
+<div class="product">
+<div class="product-top"><span class="preview">Product preview · Demo data</span><span class="user"><span aria-hidden="true">⌕　◈</span><span class="avatar" aria-hidden="true">A</span> Example account</span></div>
+<div class="widgets">
+<article class="widget"><p class="label">Virtual cash after practice fills</p><strong class="value">10,420 USDT</strong><span class="change">+4.2%</span></article>
+<article class="widget"><p class="label">Practice fills</p><strong class="value">12</strong></article>
+<article class="widget chart"><h2>Practice balance history</h2>
+<svg viewBox="0 0 520 100" preserveAspectRatio="none" role="img" aria-label="Illustrative gold area chart with an upward trend">
+<defs><linearGradient id="area" x2="0" y2="1"><stop stop-color="#ffbf50" stop-opacity=".55"/><stop offset="1" stop-color="#ffbf50" stop-opacity=".03"/></linearGradient></defs>
+<path d="M0 20H520M0 50H520M0 80H520" stroke="#3e3628" stroke-dasharray="4 5"/>
+<path d="M0 84C22 86 33 61 61 64S98 78 121 67 157 45 177 50 215 67 243 55 278 30 304 39 334 49 357 30 390 44 418 25 449 30 475 18 502 10 520 3V100H0Z" fill="url(#area)"/>
+<path d="M0 84C22 86 33 61 61 64S98 78 121 67 157 45 177 50 215 67 243 55 278 30 304 39 334 49 357 30 390 44 418 25 449 30 475 18 502 10 520 3" fill="none" stroke="#ffcc72" stroke-width="2"/>
+</svg></article>
+<article class="widget calendar"><h2>Workspace overview</h2><p class="label">Illustrative practice results</p><dl><div><dt>Buy fills</dt><dd>8</dd></div><div><dt>Sell fills</dt><dd>4</dd></div><div><dt>Realized P/L</dt><dd>+420 USDT</dd></div><div><dt>Live connection</dt><dd>Binance USDⓈ-M Futures</dd></div></dl></article>
+</div></div></section>
+</main></div></div>
+<div class="explore-content">
+<section class="explore-section" id="features"><span class="eyebrow">01 · FEATURES</span><h2>Choose how you trade.</h2><div class="feature-grid">
+<article class="widget"><h3>Practice Mode</h3><p>Start with virtual USDT. Enter a reference price, simulate market and limit orders, and track your holdings and realized P/L.</p></article>
+<article class="widget"><h3>Live Mode</h3><p>Connect Binance USDⓈ-M Futures to see available USDT and place market or limit orders after reviewing the order details.</p></article>
+<article class="widget"><h3>Account &amp; Billing</h3><p>Manage your profile and optional Northstar membership. Stripe hosts subscription checkout and billing.</p></article></div></section>
+<section class="explore-section" id="advantage"><span class="eyebrow">02 · NORTHSTAR ADVANTAGE</span><h2>Practice and live trading stay separate.</h2><p>Northstar keeps virtual balances and order history separate from live orders. Live credentials are encrypted, and sending a real-money order requires explicit confirmation.</p></section>
+<section class="explore-section" id="referral"><span class="eyebrow">03 · REFERRAL</span><h2>Share Northstar.</h2><p>You can share this Explore page with someone who can access your Northstar installation. There is currently no referral rewards program.</p><button class="pill" id="share-explore">Copy page link</button><span id="share-result" role="status"></span></section>
+<section class="explore-section" id="faq">
+<span class="eyebrow">04 · HELP</span><h2>Frequently asked questions</h2>
+<div class="faq-list">
+<article><h3>Do I need a Binance API key?</h3><p>Practice Mode works without a key. Live Mode requires a production Binance HMAC key with USDⓈ-M Futures access.</p></article>
+<article><h3>How does Practice Mode work?</h3><p>Practice Mode uses virtual USDT. Enter a reference price to simulate orders and track your virtual balance, holdings, and realized profit or loss.</p></article>
+<article><h3>When does Northstar place a real order?</h3><p>In Live Mode, review your market or limit order and type LIVE to authorize it. Switching modes does not place an order.</p></article>
+<article><h3>Do I need a subscription to trade?</h3><p>No. The optional Northstar membership adds a downloadable CSV of your Practice and Live order history.</p></article>
+<article><h3>How do I manage or cancel my subscription?</h3><p>Open Account &amp; Billing and select Manage subscription to open the Stripe billing portal.</p></article>
+<article><h3>How do I reset my password?</h3><p>Select Forgot Password on the sign-in screen. Northstar can send a reset link when the workspace operator has configured email delivery.</p></article>
+</div></section>
+<footer class="explore-footer"><strong>✳ Northstar</strong><a href="#home">Back to top ↑</a><a href="/">Open workspace ↗</a></footer>
+</div>
+<script>
+const scene = document.querySelector('.scene');
+const stars = document.querySelector('#stars');
+function paintStars() {
+  const width = scene.clientWidth, height = scene.clientHeight;
+  const dpr = Math.min(devicePixelRatio, 2);
+  stars.width = width * dpr;
+  stars.height = height * dpr;
+  const ctx = stars.getContext('2d');
+  ctx.scale(dpr, dpr);
+  let seed = 651;
+  const random = () => ((seed = Math.imul(seed, 1664525) + 1013904223 | 0) >>> 0) / 4294967296;
+  for (let i = 0; i < Math.min(900, width * height / 2100); i++) {
+    const x = random() * width, y = random() * height, size = random();
+    ctx.fillStyle = 'rgba(255,243,221,' + (.14 + size * .53) + ')';
+    ctx.beginPath();
+    ctx.arc(x, y, .32 + size * .62, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+function paintRim() {
+  const ctx = document.querySelector('#rim').getContext('2d');
+  const palette = ['#ae7410','#f1a727','#ffcc74','#ffe6b9','#f8ba4d','#cf8e1c'];
+  const left = Math.PI * 1.055, right = Math.PI * 1.945;
+  for (const [blur, width, alpha] of [[51, 25, .55],[24, 16, .72],[9, 7, .76],[0, 1.5, .92]]) {
+    ctx.filter = blur ? 'blur(' + blur + 'px)' : 'none';
+    for (let i = 0; i < 90; i++) {
+      const progress = i / 89;
+      ctx.globalAlpha = alpha * Math.sin(progress * Math.PI) ** .55;
+      ctx.strokeStyle = palette[Math.min(5, Math.floor(progress * palette.length))];
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.ellipse(836, 541, 940, 476, 0, left + (right - left) * i / 90, left + (right - left) * (i + 1.15) / 90);
+      ctx.stroke();
+    }
+  }
+}
+function layout() {
+  const scale = Math.min(innerWidth / 1672, scene.clientHeight / 941);
+  scene.style.setProperty('--scale', scale);
+  scene.style.setProperty('--extra', Math.max(0, (scene.clientHeight / scale - 941) / 2) + 'px');
+  paintStars();
+}
+paintRim();
+new ResizeObserver(layout).observe(scene);
+layout();
+
+const toggle = document.querySelector('.menu-toggle');
+const menu = document.querySelector('#menu');
+function setMenu(open) {
+  menu.classList.toggle('open', open);
+  toggle.setAttribute('aria-expanded', String(open));
+}
+toggle.addEventListener('click', () => setMenu(!menu.classList.contains('open')));
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && menu.classList.contains('open')) {
+    setMenu(false);
+    toggle.focus();
+  }
+});
+menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false)));
+document.querySelector('#share-explore').addEventListener('click', async () => {
+  const result = document.querySelector('#share-result');
+  try {
+    await navigator.clipboard.writeText(location.href.split('#')[0]);
+    result.textContent = ' Link copied.';
+  } catch {
+    result.textContent = ' Copy the address from your browser.';
+  }
+});
+if (location.protocol === 'file:') {
+  document.querySelectorAll('.start').forEach(link => { link.href = 'http://127.0.0.1:5000/'; });
+}
+</script>
+</body>
+</html>
