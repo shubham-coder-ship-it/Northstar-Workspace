@@ -125,3 +125,9 @@ request and response, e.g.:
 2026-07-22 10:15:03 | INFO     | trading_bot | API REQUEST | futures_create_order | params={'symbol': 'BTCUSDT', 'side': 'BUY', 'quantity': 0.01, 'type': 'MARKET'}
 2026-07-22 10:15:03 | INFO     | trading_bot | API RESPONSE | {'orderId': 12345678, 'status': 'FILLED', ...}
 ```
+## 👨‍💻 Author
+Shubham Sharma
+•GitHub: https://github.com/shubham-coder-ship-it 
+•LinkedIn: https://www.linkedin.com/in/shubham-sharma-55ab97367
+
+⭐ If you found this project useful, don't forget to star the repository!
