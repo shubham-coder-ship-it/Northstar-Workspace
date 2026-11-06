@@ -1,4 +1,4 @@
-"""Authenticated, testnet-only web interface. No production exchange routing."""
+﻿"""Authenticated, testnet-only web interface. No production exchange routing."""
 import base64
 import functools
 import hashlib
@@ -161,6 +161,10 @@ def create_app(config=None):
             if not g.user or session.get('version') != g.user['session_version']:
                 g.user = None
                 session.clear()
+        if app.config.get('LAN_PRACTICE_ONLY') and request.path.startswith(('/api/live/', '/api/billing/')):
+            if request.path == '/api/billing/plan':
+                return jsonify(label=None, member_export=False)
+            abort(403, 'This LAN workspace is for Practice Mode. Open Northstar on localhost or a secure deployment for live services.')
         if request.path.startswith('/api/'):
             limit('ip:' + (request.remote_addr or 'unknown'), 120, 60)
             if request.method not in ('GET', 'HEAD', 'OPTIONS') and request.path != '/api/billing/webhook':

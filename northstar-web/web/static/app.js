@@ -9,6 +9,9 @@ let workspace = null;
 const resetToken = location.hash.startsWith('#reset=') ? location.hash.slice(7) : '';
 let emailToken = location.hash.startsWith('#verify-email=') ? location.hash.slice(14) : '';
 if (resetToken || emailToken) history.replaceState(null, '', location.pathname + location.search);
+function submissionKey() {
+  return Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, '0')).join('');
+}
 function notice(message, error=false) {
   const node = $('#notice'); node.textContent = message; node.classList.toggle('error', error); node.hidden = false;
 }
@@ -275,7 +278,7 @@ liveOrder.addEventListener('submit', event => {
 });
 liveReview.addEventListener('close', () => {
   if (liveReview.returnValue !== 'send' || liveConfirm.elements.confirmation.value !== 'LIVE') return;
-  const key = liveKey ||= crypto.randomUUID().replaceAll('-', '');
+  const key = liveKey ||= submissionKey();
   busy(liveOrder.querySelector('button'), async () => {
     try {
       const result = await api('/api/live/orders', {method:'POST', headers:{'Idempotency-Key':key},
@@ -357,7 +360,7 @@ $('#order-form').addEventListener('submit',(event)=>{
     if(!user)throw new Error('Please sign in first.');
     if(!paper && !user.connected)throw new Error('Connect your testnet API credentials in Account & billing first.');
     const data=Object.fromEntries(new FormData(event.target));data.confirmed=data.confirmed==='on';
-    if(!submission)submission=crypto.randomUUID().replaceAll('-','');
+    if(!submission)submission=submissionKey();
     const result=await api('/api/orders',{method:'POST',body:data,headers:{'Idempotency-Key':submission}});
     notice(paper ? 'Practice order status: '+result.status.replaceAll('_', ' ').toLowerCase()+'. Review your order history.' : 'Testnet order status: '+result.status+'. Review your order history.');
     // Keep the same key until the user edits the form, including after ambiguous responses.
